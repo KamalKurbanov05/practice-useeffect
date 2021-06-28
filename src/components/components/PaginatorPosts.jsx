@@ -45,6 +45,7 @@ export default function PaginatorPosts(props) {
                             <li 
                                 key={index}
                                 className="card-after-click">
+                                
                                 <h3 className="card__title">{post.title}</h3>
                                 <p className="card__body">{post.body}</p>
                                 <span 
