@@ -2,9 +2,10 @@
 body {
   margin: 0;
   font-family:"Mukta" ,sans-serif;
-  box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: url("http://bgfons.com/uploads/newspaper/newspaper_texture2845.jpg");
+  background-repeat: no-repeat;
 }
 
 ul {
@@ -17,4 +18,8 @@ p {
 
 li {
   list-style-type:none;
+}
+
+* {
+  box-sizing: border-box;
 }

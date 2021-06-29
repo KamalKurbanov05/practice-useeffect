@@ -13,7 +13,7 @@ export default function DataPosts() {
             })
             .then((listData) => {
                 setListPosts(listData)
-            }).catch(console.log("this errrrrrr"))
+            }).catch(console.log("this err"))
         },
         []
     )
