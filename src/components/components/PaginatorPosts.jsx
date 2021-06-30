@@ -11,7 +11,7 @@ export default function PaginatorPosts(props) {
             opacityForOtherCard: 1,
         });
 
-
+    console.log("indexRange", indexRange)
     let handlerCard = (id) => {
         setClickCard(
             {
@@ -27,14 +27,14 @@ export default function PaginatorPosts(props) {
         } else {
             setIndexRange(
                 [
-                    (indexRange[0]-10) < 0? 0: indexRange[0]-10, indexRange[0]
+                    (indexRange[0]-RANGE) < 0? 0: indexRange[0]-RANGE, indexRange[0]
                 ]
             );
         }
     }
 
     let handlerNextBtn = () => {
-        if (indexRange[1] === props.listPosts.length -1) {
+        if (indexRange[1] === props.listPosts.length) {
             setIndexRange([0, RANGE]);
         } else {
             setIndexRange([indexRange[1], indexRange[1] + 10]);
@@ -81,6 +81,7 @@ export default function PaginatorPosts(props) {
                                     }
                                 }
                                 >
+                                    {post.id}
                                 <h3 className="card__title">
                                     {post.title.length > 40? post.title.slice(0, 40) + "...": post.title}
                                 </h3>
