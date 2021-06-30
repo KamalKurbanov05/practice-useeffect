@@ -23,7 +23,7 @@ export default function PaginatorPosts(props) {
 
     let handlerPreviousBtn = () => {
         if (indexRange[0] === 0) {
-            setIndexRange([props.listPosts.length - 1 - RANGE, props.listPosts.length -1]);
+            setIndexRange([props.listPosts.length  - RANGE, props.listPosts.length]);
         } else {
             setIndexRange(
                 [
