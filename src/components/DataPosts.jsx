@@ -18,7 +18,7 @@ export default function DataPosts() {
         []
     )
 
-    console.log(listPosts)
+    // console.log(listPosts)
     return (
         <>
             <PaginatorPosts listPosts={listPosts} />
