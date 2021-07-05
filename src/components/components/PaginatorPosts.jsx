@@ -4,102 +4,199 @@ import "./css/PaginatorPosts.css"
 
 
 export default function PaginatorPosts(props) {
-    const [range, setRange] = useState(
+    const [range, setRange] = useState (
         {
             from: 0,
             to: 9,
             countPostsOnPage: 10,
         }
     );
-    console.log("range" ,range)
 
-    if  (range.to >= props.listPosts.length-1 || range.countPostsOnPage === 'all') {
-        console.log(`preventDefault`)
+    const [disabledPaginatorPage, SetDisabledPaginatorPage] = useState(null)
+
+    let listPosts;
+    if (range.countPostsOnPage === "all") {
+        listPosts = props.listPosts;
+    } else {
+        listPosts = props.listPosts.filter((_, index) => index >= range.from && index <= range.to);
     }
-
-    let listPosts = props.listPosts.filter((post, index) => {
-        if (range.countPostsOnPage === "all") {
-            return post
-        } else {
-            if (index >= range.from && index <= range.to) {
-                return post;
-            }
-        }
-    });
 
     let handlerForm = (ev) => {
         ev.preventDefault()
     }
 
+    let changeDisabledPaginatorPage = (val) => {
+        SetDisabledPaginatorPage(val)
+    }
+
     let handlerSelect = (ev) => {
-        console.log("ev.target.value" ,ev.target.value);
-        
+
         setRange(Object.assign({},
             {
                 from: 0,
-                to: ev.target.value - 1,
+                to: isNaN(Number(ev.target.value))? props.listPosts.length: Number(ev.target.value)-1,
                 countPostsOnPage: isNaN(parseInt(ev.target.value))? ev.target.value: parseInt(ev.target.value),
             })
         )
     }
 
-    let handlerNext = (ev) => {
+    let handlerNext = () => { 
         setRange( Object.assign({}, range,
             {
-                from: range.to,
-                to: range.to + range.countPostsOnPage
+                from: range.to + 1,
+                to: range.to + range.countPostsOnPage 
             })
         )
-    
+    }
+
+    let disabledNext = () => {
+        if (range.to >= props.listPosts.length-1 || range.countPostsOnPage === 'all') {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     let handlerPrevious = () => {
         setRange( Object.assign({}, range, 
             {
                 from: range.from - range.countPostsOnPage,
-                to: range.from, 
+                to: range.from - 1,
             })
-
         )
     }
 
+    let disabledPrevious = () => {
+        if (range.from <= 0 || range.countPostsOnPage === 'all') {
+            return  true;
+        } else {
+            return false;
+        }
+    }
+
+    let handlerInTheEnd = () => {
+        setRange( Object.assign({}, range, 
+            {
+                from: props.listPosts.length - range.countPostsOnPage,
+                to: props.listPosts.length,
+            })
+        )
+    }
+
+    let disabledForInTheEnd = () => {
+        if (range.to >= props.listPosts.length-1 || range.countPostsOnPage === 'all') {
+            return  true;
+        } else {
+            return false;
+        }
+    }
+
+   let hanlerInTheBegining = () => {
+        setRange(Object.assign({}, range, 
+            {
+                from: 0, 
+                to: range.countPostsOnPage - 1,
+            })
+        )
+    }
+
+    let disabledInTheBegining = () => {
+        if (range.from <= 0 || range.countPostsOnPage === 'all') {
+            return  true;
+        } else {
+            return false;
+        }
+    }
+
     return (
-        <>
-            <ul>
-                {listPosts.map((post, index) => {
-                    return (
-                        <Post post={post} key={index}/>
-                    )
-                })
-            }
-            </ul>
-            <form onSubmit={handlerForm}>
-                <label>
-                    Число постов на одной странице
-                    <select
-                        onChange={handlerSelect}
-                        value={range.countPostsOnPage}
-                        name="select"
+            <div className="paginator-content" 
+                style={
+                        {
+                            pointerEvents: disabledPaginatorPage && "none",
+                        }
+                    }
+            >
+                <ul className="paginator-content__list">
+                    {
+                        listPosts.map((post, index) => {
+                            return (
+                                <Post 
+                                    changeDisabledPaginatorPage={changeDisabledPaginatorPage}
+                                    post={post} 
+                                    key={index}
+                                />
+                            )
+                        })
+                    }
+                </ul>
+                <div className="bottom">
+                    <form 
+                        className="form" 
+                        onSubmit={handlerForm}
                     >
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={25}>25</option>
-                        <option value="all">all</option>
-                    </select>
-                </label>
-            </form>
-            <div
-            style={{display:"inline-block", padding: "20px", border: "2px solid black", width: "10vw"}}
-            onClick={range.to >= props.listPosts.length-1 || range.countPostsOnPage === 'all'? undefined: handlerNext}
-            >
-                next
+                        <label>
+                            Число постов на одной странице
+                            <select
+                                className="select-box"
+                                onChange={handlerSelect}
+                                value={range.countPostsOnPage}
+                                name="select"
+                            >
+                                <option value={5}>5</option>
+                                <option value={10}>10</option>
+                                <option value={25}>25</option>
+                                <option value="all">all</option>
+                            </select>
+                        </label>
+                    </form>
+                    <div className="block-arrow">
+                        <button
+                            onClick={hanlerInTheBegining}
+                            className="in-the-begining"
+                            style={
+                                    {
+                                        backgroundColor: disabledInTheBegining() && "#F5F5F5",
+                                        cursor: disabledInTheBegining()? "no-drop": "pointer",
+                                    }
+                                }
+                            disabled={disabledInTheBegining()}
+                        />
+                        <button 
+                            onClick={handlerPrevious}
+                            className="previous"
+                            style={
+                                    {
+                                        backgroundColor: disabledPrevious() && "#F5F5F5",
+                                        cursor: disabledPrevious()? "no-drop": "pointer",
+                                    }
+                                }
+                            disabled={disabledPrevious()}
+                        />
+                        <button
+                            onClick={handlerNext}
+                            className="next"
+                            style={
+                                    {
+                                        backgroundColor: disabledNext() && "#F5F5F5",
+                                        cursor: disabledNext()? "no-drop": "pointer",
+                                    }
+                                }
+                            disabled={disabledNext()}
+                        />
+                        <button 
+                            onClick={handlerInTheEnd}
+                            className="in-the-end"
+                            style={
+                                    {
+                                        backgroundColor:disabledForInTheEnd() && "#F5F5F5",
+                                        cursor: disabledForInTheEnd()? "no-drop": "pointer",
+                                    }
+                                }
+                            disabled={disabledForInTheEnd()}
+                        />
+                    </div>
+                </div>
+                <div>{`${range.from+1} - ${range.to < props.listPosts.length? range.to+1: range.to} from ${props.listPosts.length}`}</div>
             </div>
-            <div 
-            style={{display:"inline-block", padding: "20px", border: "2px solid black", width: "10vw"}} 
-            onClick={range.from <= 0 || range.countPostsOnPage === 'all'? undefined: handlerPrevious}
-            >
-                previous
-            </div>
-        </>
-    )
+        )
 }
